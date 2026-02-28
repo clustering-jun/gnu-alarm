@@ -1,3 +1,20 @@
 {
-  "boards": {}
+  "boards": {
+    "학사공지": {
+      "fingerprint": "da39a3ee5e6b4b0d3255bfef95601890afd80709",
+      "latest_id": ""
+    },
+    "장학공지": {
+      "fingerprint": "da39a3ee5e6b4b0d3255bfef95601890afd80709",
+      "latest_id": ""
+    },
+    "일반공지": {
+      "fingerprint": "da39a3ee5e6b4b0d3255bfef95601890afd80709",
+      "latest_id": ""
+    },
+    "행사공지": {
+      "fingerprint": "da39a3ee5e6b4b0d3255bfef95601890afd80709",
+      "latest_id": ""
+    }
+  }
 }
