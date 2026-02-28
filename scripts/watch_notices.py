@@ -9,8 +9,8 @@ from bs4 import BeautifulSoup
 BOARDS = {
     "학사공지": "https://www.gnu.ac.kr/main/na/ntt/selectNttList.do?mi=1127&bbsId=1029",
     "장학공지": "https://www.gnu.ac.kr/main/na/ntt/selectNttList.do?bbsId=1075&mi=1376",
-    "일반공지": "https://www.gnu.ac.kr/main/na/ntt/selectNttList.do?bbsId=1028&mi=1126",
-    "행사공지": "https://www.gnu.ac.kr/main/na/ntt/selectNttList.do?bbsId=1033&mi=1132",
+    "교내기관": "https://www.gnu.ac.kr/main/na/ntt/selectNttList.do?bbsId=1028&mi=1126",
+    "교외기관": "https://www.gnu.ac.kr/main/na/ntt/selectNttList.do?bbsId=1033&mi=1132",
 }
 
 STATE_PATH = "state.json"
