@@ -45,71 +45,78 @@ def fetch_html(url: str) -> str:
     return r.text
 
 
+import re
+
+DATE_RE = re.compile(r"\b(20\d{2}[.\-]\d{2}[.\-]\d{2})\b")
+
 def extract_items(board_url: str, limit: int = 20) -> List[Dict[str, str]]:
     """
-    GNU 게시판 목록에서 (title, date, link, id_guess) 추출.
-    - HTML 구조가 바뀌면 여기 selector만 수정하면 됩니다.
+    GNU 게시판 목록에서 (title, date, id) 추출.
+    - 링크(a href nttView.do)가 HTML에 직접 없어서,
+      테이블(tr/td) 기반으로 제목/등록일을 뽑는 방식으로 구현.
     """
     html = fetch_html(board_url)
     soup = BeautifulSoup(html, "lxml")
 
-    anchors = soup.select('a[href*="nttView.do"]')
-
+    # 대부분 목록은 table 안에 있음
+    rows = soup.select("table tbody tr")
     items: List[Dict[str, str]] = []
-    seen = set()
 
-    for a in anchors:
-        title = a.get_text(strip=True)
-        href = (a.get("href") or "").strip()
-        if not title or not href:
+    for tr in rows:
+        tds = tr.find_all("td")
+        if not tds:
             continue
 
-        # 상대경로 보정
-        if href.startswith("/"):
-            link = "https://www.gnu.ac.kr" + href
-        elif href.startswith("http"):
-            link = href
-        else:
-            link = "https://www.gnu.ac.kr/main/na/" + href.lstrip("./")
+        cells = [td.get_text(" ", strip=True) for td in tds]
+        cells = [c for c in cells if c]
 
-        # 글 ID 추정: nttId 있으면 그걸 쓰고, 없으면 link 해시
-        ntt_id = ""
-        if "nttId=" in link:
-            try:
-                ntt_id = link.split("nttId=")[1].split("&")[0]
-            except Exception:
-                ntt_id = ""
-        if not ntt_id:
-            ntt_id = sha1(link)[:12]
-
-        # 등록일: 같은 행(tr)에서 날짜 후보를 찾는 휴리스틱
+        # 날짜 추출 (마지막 쪽 td에 있는 경우가 많음)
         date_text = ""
-        tr = a.find_parent("tr")
-        if tr:
-            tds = [td.get_text(" ", strip=True) for td in tr.find_all("td")]
-            for cell in tds[::-1]:
-                if "-" in cell and len(cell) >= 10:
-                    date_text = cell
-                    break
+        for c in reversed(cells):
+            m = DATE_RE.search(c)
+            if m:
+                date_text = m.group(1)
+                break
 
-        key = (title, link)
-        if key in seen:
+        # 날짜/counter/짧은 토큰 제거 후 제목 후보 선정
+        def is_noise(x: str) -> bool:
+            if not x:
+                return True
+            if x.isdigit():
+                return True
+            if x in {"공지"}:
+                return True
+            # 전화번호/조회수 등 숫자 위주
+            if len(re.sub(r"[0-9\s\-\(\)]", "", x)) == 0 and len(x) <= 6:
+                return True
+            # 날짜 토큰
+            if DATE_RE.search(x):
+                return True
+            return False
+
+        candidates = [c for c in cells if not is_noise(c)]
+        if not candidates:
             continue
-        seen.add(key)
+
+        # 제목은 “가장 긴 후보”로 잡는 휴리스틱 (공지 제목이 보통 가장 김)
+        title = max(candidates, key=len)
+
+        # 행 식별용 키(번호/구분이 있으면 포함)
+        row_key = "|".join(cells[:3])  # 앞쪽 컬럼(번호/구분/일부정보)이 가장 변별력 있음
+        stable_id = sha1(f"{board_url}|{row_key}|{title}|{date_text}")[:12]
 
         items.append({
-            "id": ntt_id,
+            "id": stable_id,
             "title": title,
             "date": date_text,
-            "link": link,
+            "link": "",  # 현재는 상세 링크를 안정적으로 구성하지 않음
         })
 
         if len(items) >= limit:
             break
 
     return items
-
-
+    
 def telegram_send_raw(text: str) -> None:
     token = os.environ["TELEGRAM_BOT_TOKEN"]
     chat_id = os.environ["TELEGRAM_CHAT_ID"]
