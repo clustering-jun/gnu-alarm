@@ -15,6 +15,14 @@
     "외부기관": {
       "fingerprint": "Test",
       "latest_id": "cce6c6234839"
+    },
+    "일반공지": {
+      "fingerprint": "76353bc5615acefbc8e33c83b0625f4d80b1b349",
+      "latest_id": "a32a7c8ddc49"
+    },
+    "행사공지": {
+      "fingerprint": "97e1c894cbe50bc7185e8e9911fb83b1ec8d008d",
+      "latest_id": "cce6c6234839"
     }
   }
 }
