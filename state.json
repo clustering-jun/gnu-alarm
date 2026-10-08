@@ -1,20 +1,20 @@
 {
   "boards": {
     "학사공지": {
-      "fingerprint": "61db977d761cfdef2cc938533b2cccdcdf22806f",
-      "latest_id": "855b522c6b13"
+      "fingerprint": "cd70b254fea5e5447e0658e6e0d48a3f22c87e2f",
+      "latest_id": "a4e0bc1c383b"
     },
     "장학공지": {
-      "fingerprint": "e9afcebc89848d11c8c332d84070074269890322",
-      "latest_id": "cb8ba0c1b632"
+      "fingerprint": "f5f4232ec4680466a437843fea12ceb3589422df",
+      "latest_id": "43229a296ad2"
     },
     "일반공지": {
-      "fingerprint": "b5b92b4cc43e9947e16d6ff5e7589ee64cab13e8",
-      "latest_id": "1409bd668a28"
+      "fingerprint": "76c7b1cadd0125c250044081bac4b4b902009e11",
+      "latest_id": "7b50e70b78c9"
     },
     "행사공지": {
-      "fingerprint": "b93145ec8ede483e9bf86ccbf3d903c583e0b06c",
-      "latest_id": "b95f478bf3dd"
+      "fingerprint": "be657ed1a8e0bfcc47bc0671e3127db618c856e1",
+      "latest_id": "f9082ed68a63"
     }
   }
 }
